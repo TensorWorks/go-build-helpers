@@ -111,7 +111,7 @@ func main() {
 		
 		module.BuildMatrix{
 			
-			// This build for the following combinations:
+			// This will build binaries for the following GOOS/GOARCH combinations:
 			// - darwin/amd64
 			// - linux/386
 			// - linux/amd64
