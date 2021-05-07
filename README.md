@@ -98,7 +98,7 @@ func main() {
 	mod, err := module.ModuleInCwd()
 	validation.ExitIfError(err)
 	
-	// Build binaries for any executables in the module (./cmd/XXX) for the host GOOS/GOARCH and place them in ./bin
+	// Build binaries for any executables in the module (anything with package `main`) for the host GOOS/GOARCH and place them in ./bin
 	err = mod.BuildBinariesForHost(module.DefaultBinDir, module.Undecorated)
 	validation.ExitIfError(err)
 	
