@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/tensorworks/go-build-helpers/pkg/process"
 )
 
 // Callers can use this constant when calling BuildBinariesFor[...]() to specify that the module's binaries directory should be used
@@ -51,7 +53,7 @@ func (module *Module) BuildBinariesForContext(binDir string, scheme NamingScheme
 	
 	// Invoke `go build` with the appropriate flags and environment variables
 	// (Note: we append a trailing slash to the output directory to ensure `go build` always interprets it as a directory)
-	err := Run(
+	err := process.Run(
 		[]string{"go", "build", "-o", fmt.Sprint(binDir, string(os.PathSeparator)), "./..."},
 		&module.RootDir,
 		&map[string]string{

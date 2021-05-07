@@ -12,6 +12,8 @@ The following packages are provided:
 
 - [network](./pkg/network): provides functionality for interacting with remote servers and downloading files.
 
+- [process](./pkg/process): provides functionality for creating and interacting with child processes.
+
 - [system](./pkg/system): provides functionality and constants related to the underlying operating system.
 
 - [tools](./pkg/tools):

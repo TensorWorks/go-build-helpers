@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/tensorworks/go-build-helpers/pkg/process"
 )
 
 // Returns the absolute filesystem path to the directory which will hold any tools needed for codegen
@@ -22,7 +24,7 @@ func (module *Module) InstallGoTools(tools []string) (error) {
 	
 	// Iterate over the list of Go tools and install each in turn
 	for _, tool := range tools {
-		if err := Run([]string{"go", "install", tool}, &module.RootDir, env); err != nil {
+		if err := process.Run([]string{"go", "install", tool}, &module.RootDir, env); err != nil {
 			return err
 		}
 	}
@@ -35,7 +37,7 @@ func (module *Module) InstallGoTools(tools []string) (error) {
 func (module *Module) Generate() (error) {
 	
 	// Invoke `go generate` with the our codegen tools directory appended to the PATH
-	return Run(
+	return process.Run(
 		[]string{"go", "generate", "./..."},
 		&module.RootDir,
 		&map[string]string{
