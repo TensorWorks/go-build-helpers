@@ -49,8 +49,8 @@ func Run(command []string, dir *string, env *map[string]string) (error) {
 			keys = append(keys, key)
 		}
 		
-		// Prevent duplicate entries by stripping any existing values for our keys
-		// (This ensures Go's internal deduplication logic doesn't inadvertently remove our supplied values)
+		// Prevent duplicate entries by stripping out any existing values for our keys
+		// (This ensures the underlying operating system doesn't ignore our supplied values as a result of them appearing after the system defaults)
 		environment = stripKeys(environment, keys)
 		
 		// Append the supplied environment variables
