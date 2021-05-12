@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // Executes the specified command and waits for it to complete
@@ -41,6 +42,18 @@ func Run(command []string, dir *string, env *map[string]string) (error) {
 	// Merge any supplied environment variables with those of the parent process
 	environment := os.Environ()
 	if env != nil {
+		
+		// Gather the list of keys for our supplied environment variables
+		keys := []string{}
+		for key := range *env {
+			keys = append(keys, key)
+		}
+		
+		// Prevent duplicate entries by stripping any existing values for our keys
+		// (This ensures Go's internal deduplication logic doesn't inadvertently remove our supplied values)
+		environment = stripKeys(environment, keys)
+		
+		// Append the supplied environment variables
 		for k, v := range *env {
 			environment = append(environment, fmt.Sprintf("%s=%s", k, v))
 		}
@@ -70,4 +83,25 @@ func Run(command []string, dir *string, env *map[string]string) (error) {
 	}
 	
 	return nil
+}
+
+// Strips the specified list of keys from an array of environment variables
+func stripKeys(env []string, keys []string) []string {
+	
+	// Construct a map of our keys for faster searching
+	keysMap := map[string]bool{}
+	for _, key := range keys {
+		keysMap[key] = true
+	}
+	
+	// Strip out any environment variable entries matching our keys
+	stripped := []string{}
+	for _, entry := range env {
+		components := strings.SplitN(entry, "=", 2)
+		if len(components) == 2 && !keysMap[components[0]] {
+			stripped = append(stripped, entry)
+		}
+	}
+	
+	return stripped
 }
