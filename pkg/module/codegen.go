@@ -41,7 +41,7 @@ func (module *Module) Generate() (error) {
 		[]string{"go", "generate", "./..."},
 		&module.RootDir,
 		&map[string]string{
-			"PATH": fmt.Sprint(os.Getenv("PATH"), os.PathListSeparator, module.CodegenToolsDir()),
+			"PATH": fmt.Sprint(os.Getenv("PATH"), string(os.PathListSeparator), module.CodegenToolsDir()),
 		},
 	)
 	
