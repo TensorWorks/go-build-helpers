@@ -99,7 +99,7 @@ func main() {
 	validation.ExitIfError(err)
 	
 	// Build binaries for any executables in the module (anything with package `main`) for the host GOOS/GOARCH and place them in ./bin
-	err = mod.BuildBinariesForHost(module.DefaultBinDir, module.Undecorated)
+	err = mod.BuildBinariesForHost(module.DefaultBinDir, module.BuildOptions{ Scheme: module.Undecorated })
 	validation.ExitIfError(err)
 	
 	// Alternatively, build binaries for executables using a matrix of GOOS/GOARCH combinations
@@ -109,7 +109,9 @@ func main() {
 		
 		// Note: this produces binaries with suffixed filenames ("cmd/mytool" becomes "bin/mytool-${GOOS}-${GOARCH}${GOEXE}")
 		// If you want binaries in subdirectories instead ("cmd/mytool" becomes "bin/${GOOS}/${GOARCH}/mytool${GOEXE}") then use module.PrefixedDirs
-		module.SuffixedFilenames,
+		module.BuildOptions{
+			Scheme: module.SuffixedFilenames,
+		},
 		
 		module.BuildMatrix{
 			
