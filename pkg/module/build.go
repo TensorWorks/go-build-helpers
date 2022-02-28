@@ -29,6 +29,14 @@ func (module *Module) BinariesDir() (string) {
 // Builds all of the executables in the Go module for the specified build context
 func (module *Module) BuildBinariesForContext(binDir string, options BuildOptions, platform string, architecture string) (error) {
 	
+	// If either of our options arrays are nil then set them to empty arrays
+	if (options.BuildTags == nil) {
+		options.BuildTags = []string{}
+	}
+	if (options.AdditionalFlags == nil) {
+		options.AdditionalFlags = []string{}
+	}
+	
 	// If no output directory was specified then use the binaries directory for the module
 	if binDir == DefaultBinDir {
 		binDir = module.BinariesDir()
@@ -51,10 +59,15 @@ func (module *Module) BuildBinariesForContext(binDir string, options BuildOption
 		binDir = filepath.Join(module.BuildDir(), "staging", platform, architecture)
 	}
 	
+	// Prepare the flags for invoking `go build`
+	flags := []string{"go", "build", "-o", fmt.Sprint(binDir, string(os.PathSeparator)), "-tags", strings.Join(options.BuildTags, ",")}
+	flags = append(flags, options.AdditionalFlags...)
+	flags = append(flags, "./...")
+	
 	// Invoke `go build` with the appropriate flags and environment variables
 	// (Note: we append a trailing slash to the output directory to ensure `go build` always interprets it as a directory)
 	err := process.Run(
-		[]string{"go", "build", "-o", fmt.Sprint(binDir, string(os.PathSeparator)), "-tags", strings.Join(options.BuildTags, ","), "./..."},
+		flags,
 		&module.RootDir,
 		&map[string]string{
 			"GOOS": platform,
