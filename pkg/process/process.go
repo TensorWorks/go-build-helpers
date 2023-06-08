@@ -91,14 +91,14 @@ func stripKeys(env []string, keys []string) []string {
 	// Construct a map of our keys for faster searching
 	keysMap := map[string]bool{}
 	for _, key := range keys {
-		keysMap[key] = true
+		keysMap[strings.ToUpper(key)] = true
 	}
 	
 	// Strip out any environment variable entries matching our keys
 	stripped := []string{}
 	for _, entry := range env {
 		components := strings.SplitN(entry, "=", 2)
-		if len(components) == 2 && !keysMap[components[0]] {
+		if len(components) == 2 && !keysMap[strings.ToUpper(components[0])] {
 			stripped = append(stripped, entry)
 		}
 	}
